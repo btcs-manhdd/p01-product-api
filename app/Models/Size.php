@@ -10,11 +10,11 @@ class Size extends Model
 {
     use HasFactory;
 
-    protected $table = 'colors';
+    protected $table = 'sizes';
     protected $fillable = [
         'name',
     ];
-
+    public $timestamps = false;
     public function subProducts()
     {
         $this->hasMany(SubProduct::class, 'size_id');

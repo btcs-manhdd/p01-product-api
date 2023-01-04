@@ -15,7 +15,7 @@ class Color extends Model
         'name',
         'code'
     ];
-
+    public $timestamps = false;
     public function subProducts()
     {
         $this->hasMany(SubProduct::class, 'color_id');

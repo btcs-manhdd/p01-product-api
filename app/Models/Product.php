@@ -19,7 +19,7 @@ class Product extends Model
         'category_id',
         'cost',
         'status',
-        'supplier_id',
+        'supplier_id'
     ];
 
 
