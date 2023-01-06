@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatistiController;
+use App\Http\Controllers\SubProductController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,6 +29,15 @@ Route::controller(ProductController::class)->group(
         Route::post('products', 'createProduct');
         Route::post('products/{id}', 'updateProduct');
         Route::delete('products/{id}', 'deleteProduct');
+    }
+);
+
+Route::controller(SubProductController::class)->group(
+    function () {
+        Route::get('sub-products/{id}', 'getSubProductById');
+        Route::post('sub-products', 'createSubProduct');
+        Route::post('sub-products/{id}', 'updateSubProduct');
+        Route::delete('sub-products/{id}', 'deleteSubProduct');
     }
 );
 
