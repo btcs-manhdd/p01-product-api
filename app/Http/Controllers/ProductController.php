@@ -50,14 +50,22 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request, $id)
     {
-        $productInfo = $request->only(['name', 'description', 'cost', 'category_id', 'supplier_id', 'status' ,'sale_off', 'sale_off_start', 'sale_price']);
+        ProductService::updateCost();
+        ProductService::updateSaleOff();
+        $total = ProductService::updateSubProductQuantyByProductId($id);
+        $productInfo = $request->only(['name', 'description', 'category_id', 'supplier_id', 'status', 'sale_off', 'sale_price']);
         $product = Product::find($id);
         $product->update($productInfo);
+        $product->quantity = $total;
+        $product->save();
         return response()->json(['message' => 'success', "data" => $product]);
     }
 
     public function deleteProduct($id)
     {
-        return response()->json(['message' => 'deleteProduct']);
+        $product = Product::find($id);
+        $product->status = false;
+        $product->save();
+        return response()->json(['message' => 'success', 'data' => $product]);
     }
 }

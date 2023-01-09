@@ -30,6 +30,11 @@ class SubProductController extends Controller
         return response()->json(['message' => 'success', 'data' => $subProduct]);
     }
 
-    // delete sub product
+    public function deleteSubProduct($id)
+    {
+        $subProduct = SubProduct::find($id);
+        $subProduct->delete();
+        return response()->json(['message' => 'success', 'data' => null]);
+    }
 
 }

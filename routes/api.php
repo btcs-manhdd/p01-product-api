@@ -41,6 +41,8 @@ Route::controller(SubProductController::class)->group(
     }
 );
 
+
+
 Route::controller(SizeController::class)->group(
     function () {
         Route::get('sizes', 'getAllSizes');

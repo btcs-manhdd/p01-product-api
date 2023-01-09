@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\Category;
+use Illuminate\Support\Facades\Http;
 
 class ProductService
 {
@@ -61,5 +62,39 @@ class ProductService
             $userProduct->sub_products = $newSubProducts;
         }
         return $userProducts;
+    }
+
+    public static function updateSubProductQuantyByProductId($id)
+    {
+        $total = 0;
+        $subProductsQuantity = Http::get('https://ltct-warehouse-backend.onrender.com/api/product/quantity/' . $id);
+        $subProductsQuantity = $subProductsQuantity->json();
+        foreach ($subProductsQuantity as $subProductQuantity) {
+            $subProduct = SubProduct::find($subProductQuantity['itemId']);
+            $subProduct->quantity = $subProductQuantity['goodQuantity'];
+            $subProduct->save();
+            $total += $subProductQuantity['goodQuantity'];
+        }
+        return $total;
+    }
+
+    public static function updateCost()
+    {
+        $allPrices = Http::get("https://sp-17-production.fly.dev/api/v1/import/get-price?groupBy=product_id");
+        foreach ($allPrices['data'] as $price) {
+            $product = Product::find($price['product_id']);
+            $product->cost = $price['price'];
+            $product->save();
+        }
+    }
+
+    public static function updateSaleOff()
+    {
+        $allSaleOff = Http::get("https://team12-ads-app.fly.dev/api/products-sale-price");
+        foreach ($allSaleOff['data'] as $saleOff) {
+            $product = Product::find($saleOff['product_id']);
+            $product->sale_off = $saleOff['sale_of'];
+            $product->save();
+        }
     }
 }
