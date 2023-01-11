@@ -67,13 +67,13 @@ class ProductService
     public static function updateSubProductQuantyByProductId($id)
     {
         $total = 0;
-        $subProductsQuantity = Http::get('https://ltct-warehouse-backend.onrender.com/api/product/quantity/' . $id);
-        $subProductsQuantity = $subProductsQuantity->json();
-        foreach ($subProductsQuantity as $subProductQuantity) {
-            $subProduct = SubProduct::find($subProductQuantity['itemId']);
-            $subProduct->quantity = $subProductQuantity['goodQuantity'];
-            $subProduct->save();
-        }
+        // $subProductsQuantity = Http::get('https://ltct-warehouse-backend.onrender.com/api/product/quantity/' . $id);
+        // $subProductsQuantity = $subProductsQuantity->json();
+        // foreach ($subProductsQuantity as $subProductQuantity) {
+        //     $subProduct = SubProduct::find($subProductQuantity['itemId']);
+        //     $subProduct->quantity = $subProductQuantity['goodQuantity'];
+        //     $subProduct->save();
+        // }
         $subProducts = SubProduct::where('product_id', $id)->get();
         foreach ($subProducts as $subProduct) {
             $total += $subProduct->quantity;
