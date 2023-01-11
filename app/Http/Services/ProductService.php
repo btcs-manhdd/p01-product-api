@@ -73,7 +73,10 @@ class ProductService
             $subProduct = SubProduct::find($subProductQuantity['itemId']);
             $subProduct->quantity = $subProductQuantity['goodQuantity'];
             $subProduct->save();
-            $total += $subProductQuantity['goodQuantity'];
+        }
+        $subProducts = SubProduct::where('product_id', $id)->get();
+        foreach ($subProducts as $subProduct) {
+            $total += $subProduct->quantity;
         }
         return $total;
     }

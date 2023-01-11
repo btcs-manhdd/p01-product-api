@@ -44,6 +44,9 @@ class ProductController extends Controller
     {
         $productInfo = $request->only(['name', 'description', 'cost', 'category_id', 'supplier_id', 'status']);
         $product = Product::create($productInfo);
+        $product->status = true;
+        $product->sale_off = 0;
+        $product->save();
         ProductService::createSubProduct($request->sub_products, $product->id);
         return response()->json(['message' => 'susccess', 'data' => $product]);
     }
@@ -64,7 +67,7 @@ class ProductController extends Controller
     public function deleteProduct($id)
     {
         $product = Product::find($id);
-        $product->status = false;
+        $product->status = null;
         $product->save();
         return response()->json(['message' => 'success', 'data' => $product]);
     }

@@ -32,6 +32,7 @@ Route::controller(ProductController::class)->group(
     }
 );
 
+
 Route::controller(SubProductController::class)->group(
     function () {
         Route::get('sub-products/{id}', 'getSubProductById');
@@ -40,7 +41,6 @@ Route::controller(SubProductController::class)->group(
         Route::delete('sub-products/{id}', 'deleteSubProduct');
     }
 );
-
 
 
 Route::controller(SizeController::class)->group(
