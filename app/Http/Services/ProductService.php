@@ -86,8 +86,10 @@ class ProductService
         $allPrices = Http::get("https://sp-17-production.fly.dev/api/v1/import/get-price?groupBy=product_id");
         foreach ($allPrices['data'] as $price) {
             $product = Product::find($price['product_id']);
-            $product->cost = $price['price'];
-            $product->save();
+            if (isset($price['price'])) {
+                $product->cost = $price['price'];
+                $product->save();
+            }
         }
     }
 
@@ -96,8 +98,10 @@ class ProductService
         $allSaleOff = Http::get("https://team12-ads-app.fly.dev/api/products-sale-price");
         foreach ($allSaleOff['data'] as $saleOff) {
             $product = Product::find($saleOff['product_id']);
-            $product->sale_off = $saleOff['sale_of'];
-            $product->save();
+            if (isset($saleOff['sale_of'])) {
+                $product->sale_off = $saleOff['sale_of'];
+                $product->save();
+            }
         }
     }
 }
