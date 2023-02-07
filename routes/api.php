@@ -5,7 +5,7 @@ use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StatistiController;
+use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\SubProductController;
 
 /*
@@ -32,52 +32,41 @@ Route::controller(ProductController::class)->group(
     }
 );
 
-
-Route::controller(SubProductController::class)->group(
-    function () {
-        Route::get('sub-products/{id}', 'getSubProductById');
-        Route::post('sub-products', 'createSubProduct');
-        Route::post('sub-products/{id}', 'updateSubProduct');
-        Route::delete('sub-products/{id}', 'deleteSubProduct');
-    }
-);
+Route::prefix('sub-products')->group(function () {
+    Route::get('/{id}', [SubProductController::class, 'getSubProductById']);
+    Route::post('/', [SubProductController::class, 'createSubProduct']);
+    Route::post('/{id}', [SubProductController::class, 'updateSubProduct']);
+    Route::delete('/{id}', [SubProductController::class, 'deleteSubProduct']);
+});
 
 
-Route::controller(SizeController::class)->group(
-    function () {
-        Route::get('sizes', 'getAllSizes');
-        Route::get('sizes/{id}', 'getSizeById');
-        Route::post('sizes', 'createSize');
-        Route::post('sizes/{id}', 'updateSize');
-        Route::delete('sizes/{id}', 'deleteSize');
-    }
-);
+Route::prefix('sizes')->group(function () {
+    Route::get('/', [SizeController::class, 'getAllSizes']);
+    Route::get('/{id}', [SizeController::class, 'getSizeById']);
+    Route::post('/', [SizeController::class, 'createSize']);
+    Route::post('/{id}', [SizeController::class, 'updateSize']);
+    Route::delete('/{id}', [SizeController::class, 'deleteSize']);
+});
 
-Route::controller(ColorController::class)->group(
-    function () {
-        Route::get('colors', 'getAllColors');
-        Route::get('colors/{id}', 'getColorById');
-        Route::post('colors', 'createColor');
-        Route::post('colors/{id}', 'updateColor');
-        Route::delete('colors/{id}', 'deleteColor');
-    }
-);
+Route::prefix('colors')->group(function () {
+    Route::get('/', [ColorController::class, 'getAllColors']);
+    Route::get('/{id}', [ColorController::class, 'getColorById']);
+    Route::post('/', [ColorController::class, 'createColor']);
+    Route::post('/{id}', [ColorController::class, 'updateColor']);
+    Route::delete('/{id}', [ColorController::class, 'deleteColor']);
+});
 
-Route::controller(CategoryController::class)->group(
-    function () {
-        Route::get('categories', 'getAllCategories');
-        Route::get('categories/{id}', 'getCategoryById');
-        Route::post('categories', 'createCategory');
-        Route::post('categories/{id}', 'updateCategory');
-        Route::delete('categories/{id}', 'deleteCategory');
-    }
-);
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'getAllCategories']);
+    Route::get('/{id}', [CategoryController::class, 'getCategoryById']);
+    Route::post('/', [CategoryController::class, 'createCategory']);
+    Route::post('/{id}', [CategoryController::class, 'updateCategory']);
+    Route::delete('/{id}', [CategoryController::class, 'deleteCategory']);
+});
 
-Route::controller(StatistiController::class)->group(
-    function () {
-        Route::get('statistics/category', 'getCategoryStatistics');
-        Route::get('statistics/new-products', 'getNewProductsStatistics');
-        Route::get('statistics/most-sale-off', 'getSaleOffProductsStatistics');
-        Route::get('statistics/rank-cost', 'getRankCostProduct');
-    }
-);
+Route::prefix('statistics')->group(function () {
+    Route::get('/category', [StatisticController::class, 'getCategoryStatistics']);
+    Route::get('/new-products', [StatisticController::class, 'getNewProductsStatistics']);
+    Route::get('/most-sale-off', [StatisticController::class, 'getSaleOffProductsStatistics']);
+    Route::get('/rank-cost', [StatisticController::class, 'getRankCostProduct']);
+});

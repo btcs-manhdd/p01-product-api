@@ -53,8 +53,8 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request, $id)
     {
-        // ProductService::updateCost();
-        // ProductService::updateSaleOff();
+        ProductService::updateCost($id);
+        ProductService::updateSaleOff($id);
         $total = ProductService::updateSubProductQuantyByProductId($id);
         $productInfo = $request->only(['name', 'description', 'category_id', 'supplier_id', 'status', 'sale_off', 'sale_price']);
         $product = Product::find($id);

@@ -6,7 +6,6 @@ use App\Models\SubProduct;
 use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
-use App\Models\Category;
 use Illuminate\Support\Facades\Http;
 
 class ProductService
@@ -67,38 +66,42 @@ class ProductService
     public static function updateSubProductQuantyByProductId($id)
     {
         $total = 0;
-        // $subProductsQuantity = Http::get('https://ltct-warehouse-backend.onrender.com/api/product/quantity/' . $id);
-        // $subProductsQuantity = $subProductsQuantity->json();
-        // foreach ($subProductsQuantity as $subProductQuantity) {
-        //     $subProduct = SubProduct::find($subProductQuantity['itemId']);
-        //     $subProduct->quantity = $subProductQuantity['goodQuantity'];
-        //     $subProduct->save();
-        // }
-        $subProducts = SubProduct::where('product_id', $id)->get();
-        foreach ($subProducts as $subProduct) {
-            $total += $subProduct->quantity;
+        try {
+            $subProductsQuantity = Http::get(env('SUB_PRODUCT_API_URL') . $id);
+            $subProductsQuantity = $subProductsQuantity->json();
+            foreach ($subProductsQuantity as $subProductQuantity) {
+                $subProduct = SubProduct::find($subProductQuantity['itemId']);
+                $subProduct->quantity = $subProductQuantity['goodQuantity'];
+                $subProduct->save();
+            }
+            $subProducts = SubProduct::where('product_id', $id)->get();
+            foreach ($subProducts as $subProduct) {
+                $total += $subProduct->quantity;
+            }
+            return $total;
+        } catch (\Throwable $th) {
+            return $total;
         }
-        return $total;
     }
 
-    public static function updateCost()
+    public static function updateCost($id)
     {
-        $allPrices = Http::get("https://sp-17-production.fly.dev/api/v1/import/get-price?groupBy=product_id");
-        foreach ($allPrices['data'] as $price) {
-            $product = Product::find($price['product_id']);
-            if (isset($price['price'])) {
-                $product->cost = $price['price'];
+        $allItems = Http::get(env("PRODUCT_COTS_API_URL"));
+        foreach ($allItems['data'] as $item) {
+            if ($item['product_id'] == $id) {
+                $product = Product::find($item['product_id']);
+                $product->cost = $item['price'];
                 $product->save();
             }
         }
     }
 
-    public static function updateSaleOff()
+    public static function updateSaleOff($id)
     {
-        $allSaleOff = Http::get("https://team12-ads-app.fly.dev/api/products-sale-price");
+        $allSaleOff = Http::get(env("PRODUCT_SALE_OFF_API_URL"));
         foreach ($allSaleOff['data'] as $saleOff) {
-            $product = Product::find($saleOff['product_id']);
-            if (isset($saleOff['sale_of'])) {
+            if ($saleOff['product_id'] == $id) {
+                $product = Product::find($saleOff['product_id']);
                 $product->sale_off = $saleOff['sale_of'];
                 $product->save();
             }

@@ -19,7 +19,7 @@ class SubProductController extends Controller
     {
         $subProductInfo = $request->only(['color_id', 'size_id', 'quantity', 'product_id', 'image_url']);
         $subProduct = SubProduct::create($subProductInfo);
-        return response()->json(['message' => 'success', 'data' => $subProductInfo]);
+        return response()->json(['message' => 'success', 'data' => $subProduct]);
     }
 
     public function updateSubProduct(Request $request, $id)
@@ -36,5 +36,4 @@ class SubProductController extends Controller
         $subProduct->delete();
         return response()->json(['message' => 'success', 'data' => null]);
     }
-
 }
