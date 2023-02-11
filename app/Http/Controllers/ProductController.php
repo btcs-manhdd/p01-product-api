@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Services\ProductService;
@@ -40,7 +41,7 @@ class ProductController extends Controller
         return response()->json(['message' => 'success', 'data' => $userProduct]);
     }
 
-    public function createProduct(Request $request)
+    public function createProduct(ProductRequest $request)
     {
         $productInfo = $request->only(['name', 'description', 'cost', 'category_id', 'supplier_id', 'status']);
         $product = Product::create($productInfo);
