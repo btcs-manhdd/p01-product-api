@@ -45,11 +45,6 @@ class ProductRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, mixed>
-     */
     public function messages()
     {
         return [
