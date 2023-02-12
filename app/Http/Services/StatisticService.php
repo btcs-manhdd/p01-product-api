@@ -35,6 +35,8 @@ class StatisticService
     public static function getCategoryStatistics()
     {
         $statistis = Product::selectRaw('count(*) as count, category_id')
+            ->where('status', 1)
+            ->orWhere('status', NULL)
             ->groupBy('category_id')
             ->get()
             ->map(function ($item) {
