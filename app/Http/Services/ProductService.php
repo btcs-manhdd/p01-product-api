@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
 use Illuminate\Support\Facades\Http;
+use Termwind\Components\Dd;
 
 class ProductService
 {
@@ -79,12 +80,17 @@ class ProductService
         try {
             $subProductsQuantity = Http::get(env('SUB_PRODUCT_API_URL') . $id);
             $subProductsQuantity = $subProductsQuantity->json();
-            foreach ($subProductsQuantity as $subProductQuantity) {
-                $subProduct = SubProduct::find($subProductQuantity['itemId']);
-                $subProduct->quantity = $subProductQuantity['goodQuantity'];
-                $subProduct->save();
-            }
             $subProducts = SubProduct::where('product_id', $id)->get();
+            foreach ($subProducts as $subProduct) {
+                foreach ($subProductsQuantity as $subProductQuantity) {
+                    if ($subProduct->id == $subProductQuantity['itemId']) {
+                        $subProduct->quantity = $subProductQuantity['goodQuantity'];
+                    } else {
+                        $subProduct->quantity = 0;
+                    }
+                    $subProduct->save();
+                }
+            }
             foreach ($subProducts as $subProduct) {
                 $total += $subProduct->quantity;
             }

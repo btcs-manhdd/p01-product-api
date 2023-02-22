@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SubProductRequest;
 use Illuminate\Http\Request;
 use App\Models\SubProduct;
 use App\Http\Services\ProductService;
+use App\Models\Product;
 
 class SubProductController extends Controller
 {
@@ -48,11 +48,15 @@ class SubProductController extends Controller
 
     public function createSubProduct(Request $request)
     {
-
-        ProductService::createSubProduct($request->sub_products, $request->product_id);
+        $productId = $request->product_id;
+        ProductService::createSubProduct($request->sub_products, $productId);
+        $total = ProductService::updateSubProductQuantyByProductId($productId);
+        $product = Product::find($productId);
+        $product->quantity = $total;
+        $product->save();
         return response()->json([
             'message' => 'Create sub product successfull',
-            'data' => SubProduct::where('product_id', $request->product_id)->get()
+            'data' => SubProduct::where('product_id', $productId)->get()
         ]);
     }
 

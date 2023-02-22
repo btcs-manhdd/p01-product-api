@@ -62,7 +62,7 @@ class ProductController extends Controller
         $product->update($productInfo);
         $product->quantity = $total;
         $product->save();
-        return response()->json(['message' => 'success', "data" => $product]);
+        return response()->json(['message' => 'Update product successful', "data" => $product]);
     }
 
     public function deleteProduct($id)
@@ -70,6 +70,6 @@ class ProductController extends Controller
         $product = Product::find($id);
         $product->status = null;
         $product->save();
-        return response()->json(['message' => 'success', 'data' => $product]);
+        return response()->json(['message' => 'Delete product successful', 'data' => $product]);
     }
 }

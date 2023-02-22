@@ -18,6 +18,7 @@ class SubProduct extends Model
         'color_id',
         'size_id',
         'image_url',
+        'quantity'
     ];
 
     public function product()
