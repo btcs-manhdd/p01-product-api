@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubProductRequest;
 use Illuminate\Http\Request;
 use App\Models\SubProduct;
+use App\Http\Services\ProductService;
 
 class SubProductController extends Controller
 {
+    public function getAllSubProducts()
+    {
+        return response()->json([
+            'message' => 'success',
+            'data' => SubProduct::all()
+        ]);
+    }
+
     public function getSubProductById($id)
     {
         return response()->json([
@@ -15,17 +25,51 @@ class SubProductController extends Controller
         ]);
     }
 
+    // public function createSubProduct(SubProductRequest $request)
+    // {
+    //     $subProduct = SubProduct::where('color_id', $request->color_id)
+    //         ->where('size_id', $request->size_id)
+    //         ->where('product_id', $request->product_id)
+    //         ->first();
+    //     if ($subProduct)
+    //         return response()->json(
+    //             [
+    //                 'message' => 'Create sub product failed',
+    //                 'errors' => [
+    //                     'Color and size must be unique'
+    //                 ]
+    //             ],
+    //             400
+    //         );
+    //     $subProductInfo = $request->only(['color_id', 'size_id', 'quantity', 'product_id', 'image_url']);
+    //     $subProduct = SubProduct::create($subProductInfo);
+    //     return response()->json(['message' => 'success', 'data' => $subProduct]);
+    // }
+
     public function createSubProduct(Request $request)
     {
-        $subProductInfo = $request->only(['color_id', 'size_id', 'quantity', 'product_id', 'image_url']);
-        $subProduct = SubProduct::create($subProductInfo);
-        return response()->json(['message' => 'success', 'data' => $subProduct]);
+
+        ProductService::createSubProduct($request->sub_products, $request->product_id);
+        return response()->json([
+            'message' => 'Create sub product successfull',
+            'data' => SubProduct::where('product_id', $request->product_id)->get()
+        ]);
     }
 
     public function updateSubProduct(Request $request, $id)
     {
-        $subProductInfo = $request->only(['color_id', 'size_id', 'image_url']);
+        $subProductInfo = $request->only(['color_id', 'size_id', 'image_url', 'product_id']);
         $subProduct = SubProduct::find($id);
+        if (!$subProduct)
+            return response()->json(
+                [
+                    'message' => 'Sub product not found',
+                    'errors' => [
+                        'Sub product not found'
+                    ]
+                ],
+                404
+            );
         $subProduct->update($subProductInfo);
         return response()->json(['message' => 'success', 'data' => $subProduct]);
     }
@@ -33,7 +77,27 @@ class SubProductController extends Controller
     public function deleteSubProduct($id)
     {
         $subProduct = SubProduct::find($id);
+        if (!$subProduct)
+            return response()->json(
+                [
+                    'message' => 'Delete sub product failed',
+                    'errors' => [
+                        'Sub product not found'
+                    ]
+                ],
+                404
+            );
+        if ($subProduct->quantity > 0)
+            return response()->json(
+                [
+                    'message' => 'Delete sub product failed',
+                    'errors' => [
+                        'Sub product is not empty'
+                    ]
+                ],
+                400
+            );
         $subProduct->delete();
-        return response()->json(['message' => 'success', 'data' => null]);
+        return response()->json(['message' => 'Delete sub product successful', 'data' => null]);
     }
 }

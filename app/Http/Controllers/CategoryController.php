@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use App\Models\Product;
 
 class CategoryController extends Controller
 {
@@ -23,7 +24,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function createCategory(Request $request)
+    public function createCategory(CategoryRequest $request)
     {
         $category = new Category();
         $category->name = $request->name;
@@ -31,9 +32,17 @@ class CategoryController extends Controller
         return response()->json(['message' => 'success', 'data' => $category]);
     }
 
-    public function updateCategory(Request $request, $id)
+    public function updateCategory(CategoryRequest $request, $id)
     {
         $category = Category::find($id);
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found',
+                'errors' => [
+                    'Category not found'
+                ]
+            ], 404);
+        }
         $category->name = $request->name;
         $category->save();
         return response()->json(['message' => 'suscess', 'data' => $category]);
@@ -41,6 +50,24 @@ class CategoryController extends Controller
 
     public function deleteCategory($id)
     {
-        return response()->json(['message' => 'deleteCategory']);
+        $product = Product::where('category_id', $id)->first();
+        if ($product) {
+            return response()->json([
+                'message' => 'Delete failed', 'errors' => [
+                    'Category has products'
+                ]
+            ], 422);
+        }
+        $category = Category::find($id);
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found',
+                'errors' => [
+                    'Category not found'
+                ]
+            ], 404);
+        }
+        $category->delete();
+        return response()->json(['message' => 'Delete success']);
     }
 }

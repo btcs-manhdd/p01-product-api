@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests;
 
+use com_exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class ProductRequest extends FormRequest
+class SubProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +19,6 @@ class ProductRequest extends FormRequest
     {
         return true;
     }
-
     protected function failedValidation(Validator $validator)
     {
         $listErrors = $validator->errors()->all();
@@ -37,22 +37,24 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:products,name',
-            'description' => 'required',
-            'category_id' => 'required|numeric',
-            'sub_products' => 'required|array',
+            'color_id' => 'required|integer',
+            'size_id' => 'required|integer',
+            'product_id' => 'required|integer',
+            'image_url' => 'required|string',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Name is required',
-            'name.unique' => 'Name is already exist',
-            'description.required' => 'Description is required',
-            'category_id.required' => 'Category is required',
-            'category_id.numeric' => 'Category is invalid',
-            'sub_products.required' => 'Sub products is required',
+            'color_id.required' => 'Color is required',
+            'color_id.integer' => 'Color must be integer',
+            'size_id.required' => 'Size is required',
+            'size_id.integer' => 'Size must be integer',
+            'product_id.required' => 'Product is required',
+            'product_id.integer' => 'Product must be integer',
+            'image_url.required' => 'Image is required',
+            'image_url.string' => 'Image must be string',
         ];
     }
 }

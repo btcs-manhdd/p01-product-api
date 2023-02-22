@@ -33,6 +33,7 @@ Route::controller(ProductController::class)->group(
 );
 
 Route::prefix('sub-products')->group(function () {
+    Route::get('/', [SubProductController::class, 'getAllSubProducts']);
     Route::get('/{id}', [SubProductController::class, 'getSubProductById']);
     Route::post('/', [SubProductController::class, 'createSubProduct']);
     Route::post('/{id}', [SubProductController::class, 'updateSubProduct']);

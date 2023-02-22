@@ -14,14 +14,24 @@ class ProductService
     {
         foreach ($subProducts as $colorId => $subProduct) {
             foreach ($subProduct as $subProductItem) {
-                $subProductInfo = [
-                    'product_id' => $productId,
-                    'size_id' => $subProductItem['size_id'],
-                    'color_id' => $colorId,
-                    'quantity' => $subProductItem['quantity'],
-                    'image_url' => $subProductItem['image_url'],
-                ];
-                SubProduct::create($subProductInfo);
+                $subProductExist = SubProduct::where('product_id', $productId)
+                    ->where('color_id', $colorId)
+                    ->where('size_id', $subProductItem['size_id'])
+                    ->first();
+                if ($subProductExist) {
+                    $subProductExist->quantity = $subProductItem['quantity'];
+                    $subProductExist->image_url = $subProductItem['image_url'];
+                    $subProductExist->save();
+                } else {
+                    $subProductInfo = [
+                        'product_id' => $productId,
+                        'size_id' => $subProductItem['size_id'],
+                        'color_id' => $colorId,
+                        'quantity' => $subProductItem['quantity'],
+                        'image_url' => $subProductItem['image_url'],
+                    ];
+                    SubProduct::create($subProductInfo);
+                }
             }
         }
     }

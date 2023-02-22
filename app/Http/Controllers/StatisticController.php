@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\StatisticService;
 use App\Models\Product;
-use App\Models\Category;
-use App\Models\Color;
-use App\Models\Size;
+
 
 use function Termwind\render;
 
